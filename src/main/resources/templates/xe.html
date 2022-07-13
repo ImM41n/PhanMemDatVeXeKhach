@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Thông tin xe</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"
+            crossorigin="anonymous"></script>
+</head>
+<style>
+    #layoutSidenav_nav .nav {
+        display: flex;
+        flex-direction: column;
+        background: black;
+    }
+
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    a:hover {
+        border-radius: 5px;
+        /*border: solid 1px azure;*/
+        font-size: 110%;
+    }
+
+</style>
+<body class="sb-nav-fixed" style="height:100%">
+<div th:include="~{head.html}"></div>
+<div class="content d-flex justify-content-start w-100 ">
+    <div th:include="~{left.html}"></div>
+    <div class="right-content w-75 ml-5 my-5">
+        <div th:switch="${mode}">
+            <div th:case="MAIN" style="overflow-y: scroll;height: 700px;">
+                <a class="btn btn-primary mb-4" href="xe/them-xe" role="button">Thêm xe</a>
+<!--                <a class="btn btn-primary mb-4 " th:href="@{/xe/upXe}" role="button">Cập nhật xe</a>-->
+                <div class="card mb-4 w-100">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">STT</th>
+                                    <th scope="col">Tên xe</th>
+                                    <th scope="col">Số ghế</th>
+                                    <th scope="col">Loại xe</th>
+                                    <th scope="col">Giá ghế</th>
+                                    <th scope="col">Trạng thái</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item : ${xes}">
+                                    <td th:text="${item.getId()}"></td>
+                                    <td th:text="${item.getTen()}"></td>
+                                    <td th:text="${item.getSoghe()}"></td>
+                                    <td th:text="${item.getLoai().getTen()}"></td>
+                                    <td th:text="${item.getLoai().getGia()}"></td>
+                                    <td th:text="${item.getTrangthai()} ? 'Rảnh' : 'Không rảnh'"></td>
+                                    <td class="d-flex justify-content-end">
+                                        <div class="btn-toolbar" role="group" aria-label="Basic example">
+                                            <a class="btn btn-primary mb-4 mr-4"
+                                               th:href="@{/xe/sua-xe/{id}(id=${item.getId()})}" role="button">Sửa</a>
+                                            <div th:switch="${item.getTrangthai()}" >
+                                              <div th:case="false">
+                                                  <a class="btn btn-danger mb-4 disabled"
+                                                     th:href="@{/xe/xoa-xe/{id}(id=${item.getId()})}" role="button"
+                                                     onclick="return confirm('Bạn có chắc muốn xóa ?')">Xóa</a>
+                                              </div>
+                                               <div th:case="true">
+                                                   <a class="btn btn-danger mb-4"
+                                                      th:href="@{/xe/xoa-xe/{id}(id=${item.getId()})}" role="button"
+                                                      onclick="return confirm('Bạn có chắc muốn xóa ?')">Xóa</a>
+                                               </div>
+                                           </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:case="SUA">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <h1>Sửa xe</h1>
+                            <form th:action="@{/xe/sua-xe}" method="post" th:object="${xeDTO}">
+                                <input th:field="*{id}" hidden/>
+                                <input th:field="*{loai}" hidden/>
+                                <div th:switch="${xeDTO.getTrangthai()}">
+                                    <div th:case="false">
+                                        <div class="form-group">
+                                            <label class="control-label"> Tên xe </label>
+                                            <input class="form-control" th:field="*{ten}" type="text"
+                                                   required readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Số ghế</label>
+                                            <input class="form-control" th:field="*{soghe}" type="text"
+                                                   required readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Giá</label>
+                                            <input class="form-control" th:field="*{gia}" type="text"
+                                                   required readonly>
+                                        </div>
+                                        <div class="form-check form-switch mt-3">
+                                            <input class="form-check-input" th:field="*{trangthai}" type="checkbox" checked>
+                                            <label class="form-check-label">Trạng thái rảnh</label>
+                                        </div>
+                                    </div>
+                                    <div th:case="true">
+                                        <div class="form-group">
+                                            <label class="control-label"> Tên xe </label>
+                                            <input class="form-control" th:field="*{ten}" type="text"
+                                                   required >
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Số ghế</label>
+                                            <select th:field="*{soghe}" required   class="form-control">
+                                                <option th:text="${xeSeatNumber.getType1()}" th:value="${xeSeatNumber.getType1()}"></option>
+                                                <option th:text="${xeSeatNumber.getType2()}" th:value="${xeSeatNumber.getType2()}"></option>
+                                                <option th:text="${xeSeatNumber.getType3()}" th:value="${xeSeatNumber.getType3()}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <select th:field="*{loai}" name="test"  required class="form-control text-secondary">
+                                                <option th:each="item : ${loais}" th:value="${item.getId()}"
+                                                        th:text="${item.getGia()}" >
+                                            </select>
+                                        </div>
+                                        <div class="form-check form-switch mt-3">
+                                            <input class="form-check-input" th:field="*{trangthai}" type="checkbox" checked>
+                                            <label class="form-check-label">Trạng thái rảnh</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <button type="submit" class="btn btn-success" value="Submit">Sửa</button>
+                                <a class="btn btn-danger" href="back" role="button">Trở về</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:case="THEM">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <h1>Thêm xe</h1>
+                            <form th:action="@{/xe/them-xe}" method="post" th:object="${xeDTO}">
+                                <div class="form-group">
+                                    <label class="control-label"> Tên xe</label>
+                                    <input class="form-control" th:field="*{ten}"
+                                           required autofocus="autofocus"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Số ghế</label>
+                                    <select th:field="*{soghe}" required class="form-control">
+                                        <option th:text="${xeSeatNumber.getType1()}" th:value="${xeSeatNumber.getType1()}"></option>
+                                        <option th:text="${xeSeatNumber.getType2()}" th:value="${xeSeatNumber.getType2()}"></option>
+                                        <option th:text="${xeSeatNumber.getType3()}" th:value="${xeSeatNumber.getType3()}"></option>
+                                    </select>
+<!--                                    <input type="number" class="form-control" th:field="*{soghe}"-->
+<!--                                           required autofocus="autofocus"/>-->
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Giá chuyến xe</label>
+                                    <select th:field="*{loai}" class="form-control text-secondary" required>
+                                        <th:block th:each="item : ${loais}">
+                                            <option th:text="${item.getGia()}" th:value="${item.getId()}"/>
+                                        </th:block>
+                                    </select>
+                                </div>
+                                <div class="form-check form-switch mt-3">
+                                    <input class="form-check-input" th:field="*{trangthai}" checked type="checkbox">
+                                    <label class="form-check-label">Trạng thái rảnh</label>
+                                </div>
+                                <br>
+                                <button type="submit" class="btn btn-success" value="Submit">Thêm</button>
+                                <a class="btn btn-danger ml-3" href="them-xe/back" role="button">Trở về</a>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Thông tin tuyến xe</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"
+            crossorigin="anonymous"></script>
+
+</head>
+<style>
+    #layoutSidenav_nav .nav {
+        display: flex;
+        flex-direction: column;
+        background: black;
+    }
+
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    a:hover {
+        border-radius: 5px;
+        border: solid 1px azure;
+        font-size: 110%;
+    }
+</style>
+<body class="sb-nav-fixed" style="height:100%">
+<div th:include="~{head.html}"></div>
+<div class="content d-flex justify-content-start w-100 ">
+    <div th:include="~{left.html}"></div>
+    <div class="right-content w-75 ml-5 my-5">
+
+        <div th:switch="${mode}">
+
+            <div th:case="MAIN"style="overflow-y: scroll;height: 700px;">
+                <a class="btn btn-primary mb-4" href="tuyen/them-tuyen/" role="button">Thêm tuyến xe</a>
+                <div class="card mb-4 w-100">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">STT</th>
+                                    <th scope="col">Tên tuyến</th>
+                                    <th scope="col">Thời gian</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item : ${tuyens}">
+                                    <td th:text="${item.getId()}"></td>
+                                    <td th:text="${item.getTentuyen()}"></td>
+                                    <td th:text="${item.getGio()}"></td>
+                                    <td class="d-flex justify-content-end">
+                                        <div class="btn-toolbar" role="group" aria-label="Basic example">
+                                            <a class="btn btn-primary mb-4 mr-4"
+                                               th:href="@{/tuyen/sua-tuyen/{id}(id=${item.getId()})}"
+                                               role="button">Sửa</a>
+                                            <a class="btn btn-danger mb-4"
+                                               th:href="@{/tuyen/xoa-tuyen/{id}(id=${item.getId()})}" role="button"
+                                               onclick="return confirm('Bạn có chắc muốn xóa ?')">Xóa</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div th:case="SUA">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <h1>Sửa tuyến</h1>
+                            <form th:action="@{/tuyen/sua-tuyen}" method="post" th:object="${tuyenDTO}">
+                                <input hidden=""/>
+                                <div class="form-group">
+                                    <input th:field="*{id}" hidden/>
+                                    <input th:field="*{status}" hidden>
+                                    <label class="control-label" > Tên tuyến </label>
+                                    <select th:field="*{tenTuyen}"class="form-control text-secondary" required>
+                                        <th:block>
+                                            <option th:text="${path.getPathForward()}" th:value="${path.getPathForward()}"/>
+                                            <option th:text="${path.getPathReverse()}" th:value="${path.getPathReverse()}"/>
+                                        </th:block>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Thời gian</label>
+                                    <input type="time" class="form-control" th:field="*{gio}" required>
+                                </div>
+                                <br>
+                                <button type="submit" class="btn btn-success" value="Submit">Sửa</button>
+                                <a class="btn btn-danger" href="back" role="button">Trở về</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:case="THEM">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <h1>Thêm tuyến</h1>
+                            <form th:action="@{/tuyen/them-tuyen}" method="post" th:object="${tuyenDTO}">
+                                <div class="form-group">
+                                    <label class="control-label"> Tên tuyến </label>
+                                    <select th:field="*{tenTuyen}"class="form-control text-secondary" required>
+                                        <th:block>
+                                            <option th:text="${path.getPathForward()}" th:value="${path.getPathForward()}"/>
+                                            <option th:text="${path.getPathReverse()}" th:value="${path.getPathReverse()}"/>
+                                        </th:block>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Thời gian</label>
+                                    <input type="time" class="form-control" th:field="*{gio}" required>
+                                </div>
+                                <br>
+                                <button type="submit" class="btn btn-success" value="Submit">Thêm</button>
+                                <a class="btn btn-danger" href="back" role="button">Trở về</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

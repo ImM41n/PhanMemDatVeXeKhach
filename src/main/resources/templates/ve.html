@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Thông tin vé</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"
+            crossorigin="anonymous"></script>
+
+</head>
+<style>
+    #layoutSidenav_nav .nav {
+        display: flex;
+        flex-direction: column;
+        background: black;
+    }
+
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    a:hover {
+        border-radius: 5px;
+        border: solid 1px azure;
+        font-size: 110%;
+    }
+
+</style>
+<body class="sb-nav-fixed" style="height:100%">
+<div th:include="~{head.html}"></div>
+<div class="content d-flex justify-content-start w-100 ">
+    <div th:include="~{left.html}"></div>
+
+    <div class="right-content w-75 ml-5 my-5">
+
+        <div th:switch="${mode}">
+
+            <div th:case="MAIN" style="overflow-y: scroll;height: 700px;">
+                <div class="card mb-4 w-100">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">STT</th>
+                                    <th scope="col">Tên khách hàng</th>
+                                    <th scope="col">Giá vé</th>
+                                    <th scope="col">Điểm đi</th>
+                                    <th scope="col">Điểm đến</th>
+                                    <th scope="col">Tên xe</th>
+                                    <th scope="col">Mã ghế</th>
+                                    <th scope="col">Ngày</th>
+                                    <th scope="col">Thời gian</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item : ${veDTO}">
+                                    <td th:text="${item.getId()}"></td>
+                                    <td th:text="${item.getFullName()}"></td>
+                                    <td th:text="${item.getGia()}"></td>
+                                    <td th:text="${item.getDiemDi()}"></td>
+                                    <td th:text="${item.getDiemDen()}"></td>
+                                    <td th:text="${item.getTenXe()}"></td>
+                                    <td th:text="${item.getMaGhe()}"></td>
+                                    <td th:text="${item.getNgay()}"></td>
+                                    <td th:text="${item.getGio()}"></td>
+                                    <td class="d-flex justify-content-end">
+                                        <div class="btn-toolbar" role="group" aria-label="Basic example">
+<!--                                            <a class="btn btn-success mb-4 mr-4"-->
+<!--                                               th:href="@{/ve/xac-nhan/{id}(id=${item.getVeID()})}" role="button">Xác nhận</a>-->
+                                            <a class="btn btn-danger mb-4"
+                                               th:href="@{/ve/xoa-ve/{id}(id=${item.getVeID()})}" role="button"
+                                               onclick="return confirm('Bạn có chắc muốn xóa vé?')">Xóa vé</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
